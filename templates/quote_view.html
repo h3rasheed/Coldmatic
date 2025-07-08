@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Quote {{ quote.quote_number }} - Coldmatic{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-file-alt me-2"></i>Quote {{ quote.quote_number }}
+            </h2>
+            <div class="btn-group">
+                <a href="{{ url_for('download_quote_pdf', quote_id=quote.id) }}" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Download PDF
+                </a>
+                <a href="{{ url_for('list_quotes') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Quotes
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Quote Details</h4>
+            </div>
+            <div class="card-body">
+                <!-- Quote Info -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Quote Information</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Quote Number:</strong></td>
+                                <td>{{ quote.quote_number }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Created:</strong></td>
+                                <td>{{ quote.created_date.strftime('%B %d, %Y at %I:%M %p') if quote.created_date else 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    {% if quote.status == 'draft' %}
+                                        <span class="badge bg-secondary">Draft</span>
+                                    {% elif quote.status == 'generated' %}
+                                        <span class="badge bg-success">Generated</span>
+                                    {% elif quote.status == 'sent' %}
+                                        <span class="badge bg-primary">Sent</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">{{ quote.status|title }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Customer Information</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Customer:</strong></td>
+                                <td>{{ quote.customer_name or 'N/A' }}</td>
+                            </tr>
+                            {% if quote.attention_to %}
+                            <tr>
+                                <td><strong>Sales Rep:</strong></td>
+                                <td>{{ quote.attention_to }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Address:</strong></td>
+                                <td>{{ quote.customer_address or 'N/A' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Door Specifications -->
+                {% for door in quote.doors %}
+                <div class="section-divider mb-4">
+                    <h5 class="text-primary border-bottom pb-2">Door {{ loop.index }} Specifications</h5>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-secondary">Basic Configuration</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Door Type:</strong></td>
+                                <td>{{ door.door_type or 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Type:</strong></td>
+                                <td>
+                                    {% if door.cooler_freezer %}
+                                        <span class="badge bg-info">{{ door.cooler_freezer }}</span>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Frame Structure:</strong></td>
+                                <td>{{ door.frame_structure or 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operation:</strong></td>
+                                <td>{{ door.motorized_manual or 'N/A' }}</td>
+                            </tr>
+                            {% if door.exterior_type %}
+                            <tr>
+                                <td><strong>Exterior Type:</strong></td>
+                                <td>{{ door.exterior_type }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-secondary">Dimensions</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Width:</strong></td>
+                                <td>{{ door.width_inches or 0 }}"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Height:</strong></td>
+                                <td>{{ door.height_inches or 0 }}"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Depth:</strong></td>
+                                <td>{{ door.depth_inches or 0 }}"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wall Thickness:</strong></td>
+                                <td>{{ door.wall_thickness_inches or 0 }}"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Quantity:</strong></td>
+                                <td>{{ door.quantity or 1 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Materials & Options -->
+                {% if door.door_panel or door.face_frame or door.inside_jamb or door.back_frame %}
+                <div class="section-divider mb-4">
+                    <h5 class="text-primary border-bottom pb-2">Materials & Frame Options</h5>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-striped">
+                            {% if door.door_panel %}
+                            <tr>
+                                <td><strong>Door Panel:</strong></td>
+                                <td>{{ door.door_panel }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.face_frame %}
+                            <tr>
+                                <td><strong>Face Frame:</strong></td>
+                                <td>{{ door.face_frame }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.inside_jamb %}
+                            <tr>
+                                <td><strong>Inside Jamb:</strong></td>
+                                <td>{{ door.inside_jamb }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.back_frame %}
+                            <tr>
+                                <td><strong>Back Frame:</strong></td>
+                                <td>{{ door.back_frame }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.freezer_door_motor_volts %}
+                            <tr>
+                                <td><strong>Motor Volts:</strong></td>
+                                <td>{{ door.freezer_door_motor_volts }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.bottom_sweep_weather_strip %}
+                            <tr>
+                                <td><strong>Bottom Sweep/Weather Strip:</strong></td>
+                                <td>{{ door.bottom_sweep_weather_strip }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Hardware & Additional Options -->
+                {% if door.interior_release or door.door_closer or door.strike or door.temperature_gauge %}
+                <div class="section-divider mb-4">
+                    <h5 class="text-primary border-bottom pb-2">Hardware & Additional Options</h5>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-secondary">Hardware</h6>
+                        <table class="table table-sm">
+                            {% if door.interior_release %}
+                            <tr>
+                                <td><strong>Interior Release:</strong></td>
+                                <td>{{ door.interior_release }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.door_closer %}
+                            <tr>
+                                <td><strong>Door Closer:</strong></td>
+                                <td>{{ door.door_closer }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.strike %}
+                            <tr>
+                                <td><strong>Strike:</strong></td>
+                                <td>{{ door.strike }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.threshold_plate %}
+                            <tr>
+                                <td><strong>Threshold Plate:</strong></td>
+                                <td>{{ door.threshold_plate }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-secondary">Technical Options</h6>
+                        <table class="table table-sm">
+                            {% if door.temperature_gauge %}
+                            <tr>
+                                <td><strong>Temperature Gauge:</strong></td>
+                                <td>{{ door.temperature_gauge }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.receptacle_box %}
+                            <tr>
+                                <td><strong>Receptacle Box:</strong></td>
+                                <td>{{ door.receptacle_box }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if door.junction_box %}
+                            <tr>
+                                <td><strong>Junction Box:</strong></td>
+                                <td>{{ door.junction_box }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Boolean Options -->
+                {% set boolean_options = [] %}
+                {% if door.rain_hood_projection %}{% set _ = boolean_options.append('Rain Hood / Projection') %}{% endif %}
+                {% if door.wind_chains %}{% set _ = boolean_options.append('Wind Chains') %}{% endif %}
+                {% if door.internal_light %}{% set _ = boolean_options.append('Internal Light') %}{% endif %}
+                {% if door.light_switch %}{% set _ = boolean_options.append('Light Switch') %}{% endif %}
+                {% if door.vent %}{% set _ = boolean_options.append('Vent') %}{% endif %}
+                {% if door.sliding_door_package %}{% set _ = boolean_options.append('Sliding Door Package') %}{% endif %}
+
+                {% if boolean_options %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="text-secondary">Additional Features</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for option in boolean_options %}
+                                <span class="badge bg-success">{{ option }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Door Pricing Breakdown -->
+                <div class="section-divider mb-4">
+                    <h5 class="text-primary border-bottom pb-2">Door {{ loop.index }} Pricing</h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="pricing-summary bg-light p-4 rounded">
+                            <table class="table table-borderless mb-0">
+                                <tr>
+                                    <td><strong>Base Door Price:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(door.base_price|float if door.base_price else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Material Costs:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(door.material_expense|float if door.material_expense else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hardware & Options:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(door.options_price|float if door.options_price else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Labor & Installation:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(door.labor_expense|float if door.labor_expense else 0) }}</strong></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><h5 class="mb-0 text-primary"><strong>Total Price:</strong></h5></td>
+                                    <td class="text-end"><h4 class="mb-0 text-success"><strong>${{ "%.2f"|format(door.total_price|float if door.total_price else 0) }}</strong></h4></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Total Quote Pricing -->
+                <div class="section-divider mb-4">
+                    <h5 class="text-primary border-bottom pb-2">Total Quote Pricing</h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="pricing-summary bg-light p-4 rounded">
+                            <table class="table table-borderless mb-0">
+                                <tr>
+                                    <td><strong>Base Door Price:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(quote.base_price|float if quote.base_price else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Material Costs:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(quote.material_expense|float if quote.material_expense else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hardware & Options:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(quote.options_price|float if quote.options_price else 0) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Labor & Installation:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(quote.labor_expense|float if quote.labor_expense else 0) }}</strong></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><h5 class="mb-0 text-primary"><strong>Total Quote Price:</strong></h5></td>
+                                    <td class="text-end"><h4 class="mb-0 text-success"><strong>${{ "%.2f"|format(quote.total_price|float if quote.total_price else 0) }}</strong></h4></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

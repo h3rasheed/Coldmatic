@@ -1,0 +1,1061 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  New Door Quote - Coldmatic
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="fas fa-door-open me-2"></i>
+            Door Quotation Generator
+          </h3>
+        </div>
+        <div class="card-body">
+          <form id="quoteForm" method="POST" action="{{ url_for('generate_quote') }}">
+            <!-- Customer Information -->
+            <div class="section-header mb-4">
+              <h4 class="text-primary border-bottom pb-2"><i class="fas fa-user me-2"></i>Customer Information</h4>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="customer_name" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+              </div>
+              <div class="col-md-6">
+                <label for="attention_to" class="form-label">Sales Rep</label>
+                <input type="text" class="form-control" id="attention_to" name="attention_to">
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <label for="customer_address" class="form-label">Customer Address <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="customer_address" name="customer_address" rows="3" required></textarea>
+              </div>
+            </div>
+
+            <div class="doors-main-wrapper" id="doorsWrapper">
+              <div class="door-wrapper" data-door-id="1">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h2>Door 1</h2>
+                  <button type="button" class="btn btn-danger delete-door-btn">Delete</button>
+                </div>
+                <div class="door-inner-details">
+                  <!-- Step 1: Door Configuration -->
+                  <div class="section-header mb-4">
+                    <h4 class="text-primary border-bottom pb-2"><i class="fas fa-cog me-2"></i>Step 1: Door Configuration</h4>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="door_type_1" class="form-label required">Door Type <span class="text-danger">*</span></label>
+                      <select class="form-select" id="door_type_1" name="doors[1][door_type]" required>
+                        <option value="">Select Door Type</option>
+                        <option value="Overlap Doors - Swing door">Overlap Doors - Swing door</option>
+                        <option value="Power Operated Sliding door - Single horizontal">Power Operated Sliding door - Single horizontal</option>
+                        <option value="Sliding Door">Sliding Door</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="cooler_freezer_1" class="form-label required">Cooler / Freezer <span class="text-danger">*</span></label>
+                      <select class="form-select" id="cooler_freezer_1" name="doors[1][cooler_freezer]" required>
+                        <option value="">Select Type</option>
+                        <option value="Cooler">Cooler</option>
+                        <option value="Freezer">Freezer</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="frame_structure_1" class="form-label required">Frame Structure <span class="text-danger">*</span></label>
+                      <select class="form-select" id="frame_structure_1" name="doors[1][frame_structure]" required>
+                        <option value="">Select Frame Structure</option>
+                        <option value="Aluminium">Aluminium</option>
+                        <option value="Wood">Wood</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="motorized_manual_1" class="form-label required">Motorized/Manual <span class="text-danger">*</span></label>
+                      <select class="form-select" id="motorized_manual_1" name="doors[1][motorized_manual]" required>
+                        <option value="">Select Type</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Motorized">Motorized</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-4">
+                      <label for="exterior_type_1" class="form-label">Exterior Type</label>
+                      <select class="form-select" id="exterior_type_1" name="doors[1][exterior_type]">
+                        <option value="">Select Exterior Type</option>
+                        <option value="Exterior Door - with step sill">Exterior Door - with step sill</option>
+                        <option value="Interior">Interior</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="quantity_1" class="form-label required">Quantity <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="quantity_1" name="doors[1][quantity]" min="1" max="100" value="1" required>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="markup_percentage_1" class="form-label required">Markup Percentage (%) <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="markup_percentage_1" name="doors[1][markup_percentage]" min="0" max="100" step="0.1" value="30" required>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3 passkey-section" id="passkeySection_1" style="display: none;">
+                    <div class="col-md-6">
+                      <label for="passkey_1" class="form-label required">Passkey <span class="text-danger">*</span></label>
+                      <input type="password" class="form-control" id="passkey_1" name="doors[1][passkey]">
+                    </div>
+                  </div>
+
+                  <!-- Door Dimensions -->
+                  <div class="dimension-section mb-4">
+                    <h5 class="text-secondary mb-3">Door Dimensions</h5>
+                    <div class="row">
+                      <div class="col-md-3">
+                        <label for="width_inches_1" class="form-label required">Width (inches) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control dimension-input" id="width_inches_1" name="doors[1][width_inches]" min="1" max="300" required>
+                      </div>
+                      <div class="col-md-3">
+                        <label for="height_inches_1" class="form-label required">Height (inches) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control dimension-input" id="height_inches_1" name="doors[1][height_inches]" min="1" max="300" required>
+                      </div>
+                      <div class="col-md-3">
+                        <label for="depth_inches_1" class="form-label required">Depth (inches) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control dimension-input" id="depth_inches_1" name="doors[1][depth_inches]" min="1" max="20" required>
+                      </div>
+                      <div class="col-md-3">
+                        <label for="wall_thickness_inches_1" class="form-label required">Wall Thickness (inches) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control dimension-input" id="wall_thickness_inches_1" name="doors[1][wall_thickness_inches]" min="1" max="20" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Door Panel and Frame Options -->
+                  <div class="panel-section mb-4">
+                    <h5 class="text-secondary mb-3">Door Panel and Frame Options</h5>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="door_panel_1" class="form-label">Door Panel</label>
+                        <select class="form-select" id="door_panel_1" name="doors[1][door_panel]">
+                          <option value="">Select Door Panel</option>
+                          <option value="26 Ga. White - Stucco Embossed Finish">26 Ga. White - Stucco Embossed Finish</option>
+                          <option value="20 Ga. White - Stucco Embossed Finish">20 Ga. White - Stucco Embossed Finish</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="face_frame_1" class="form-label">Face Frame</label>
+                        <select class="form-select" id="face_frame_1" name="doors[1][face_frame]">
+                          <option value="">Select Face Frame</option>
+                          <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                          <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="inside_jamb_1" class="form-label">Inside Jamb</label>
+                        <select class="form-select" id="inside_jamb_1" name="doors[1][inside_jamb]">
+                          <option value="">Select Inside Jamb</option>
+                          <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                          <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="back_frame_1" class="form-label">Back Frame</label>
+                        <select class="form-select" id="back_frame_1" name="doors[1][back_frame]">
+                          <option value="">Select Back Frame</option>
+                          <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                          <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="freezer_door_motor_volts_1" class="form-label">Freezer Door - Motor Volts</label>
+                        <select class="form-select" id="freezer_door_motor_volts_1" name="doors[1][freezer_door_motor_volts]">
+                          <option value="">Select Voltage</option>
+                          <option value="115VAC/1Phase-60Hz Defrost system">115VAC/1Phase-60Hz Defrost system</option>
+                          <option value="230VAC/1Phase-60Hz Defrost system">230VAC/1Phase-60Hz Defrost system</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="bottom_sweep_weather_strip_1" class="form-label">Bottom Sweep/Weather Strip</label>
+                        <select class="form-select" id="bottom_sweep_weather_strip_1" name="doors[1][bottom_sweep_weather_strip]">
+                          <option value="">Select Option</option>
+                          <option value="Bottom Sweep">Bottom Sweep</option>
+                          <option value="Weather Strip">Weather Strip</option>
+                          <option value="Both">Both</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Step 1 Complete Button -->
+                  <div class="text-center mb-4">
+                    <button type="button" class="btn btn-success btn-lg complete-step1-btn" data-door-id="1"><i class="fas fa-check me-2"></i>Complete Step 1 & Continue</button>
+                  </div>
+
+                  <!-- Step 2: Additional Options & Add-ons (Collapsed by default) -->
+                  <div class="collapse" id="step2Section_1">
+                    <div class="section-header mb-4">
+                      <h4 class="text-primary border-bottom pb-2"><i class="fas fa-plus-circle me-2"></i>Step 2: Additional Options & Add-ons</h4>
+                    </div>
+
+                    <!-- Hardware Options -->
+                    <div class="hardware-section mb-4">
+                      <h5 class="text-secondary mb-3">Hardware Options</h5>
+                      <div class="row mb-3">
+                        <div class="col-md-4">
+                          <label for="interior_release_1" class="form-label">Interior Release</label>
+                          <select class="form-select" id="interior_release_1" name="doors[1][interior_release]">
+                            <option value="">Select Option</option>
+                            <option value="Mushroom Button">Mushroom Button</option>
+                            <option value="Standard Release">Standard Release</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="door_closer_1" class="form-label">Door Closer</label>
+                          <select class="form-select" id="door_closer_1" name="doors[1][door_closer]">
+                            <option value="">Select Option</option>
+                            <option value="Spring Door Closer">Spring Door Closer</option>
+                            <option value="Hydraulic Door Closer">Hydraulic Door Closer</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="strike_1" class="form-label">Strike</label>
+                          <select class="form-select" id="strike_1" name="doors[1][strike]">
+                            <option value="">Select Option</option>
+                            <option value="SS6 Strike Chrome 3/4 x 1 5/8">SS6 Strike Chrome 3/4 x 1 5/8</option>
+                            <option value="Standard Strike">Standard Strike</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Additional Features -->
+                    <div class="features-section mb-4">
+                      <h5 class="text-secondary mb-3">Additional Features</h5>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="rain_hood_projection_1" name="doors[1][rain_hood_projection]" value="y">
+                            <label class="form-check-label" for="rain_hood_projection_1">Rain Hood / Projection</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="wind_chains_1" name="doors[1][wind_chains]" value="y">
+                            <label class="form-check-label" for="wind_chains_1">Wind Chains</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="internal_light_1" name="doors[1][internal_light]" value="y">
+                            <label class="form-check-label" for="internal_light_1">Internal Light</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="light_switch_1" name="doors[1][light_switch]" value="y">
+                            <label class="form-check-label" for="light_switch_1">Light Switch</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="vent_1" name="doors[1][vent]" value="y">
+                            <label class="form-check-label" for="vent_1">Vent</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input sliding-door-package" type="checkbox" id="sliding_door_package_1" name="doors[1][sliding_door_package]" value="y">
+                            <label class="form-check-label" for="sliding_door_package_1">Sliding Door Package</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Technical Options -->
+                    <div class="technical-section mb-4">
+                      <h5 class="text-secondary mb-3">Technical Options</h5>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="temperature_gauge_1" class="form-label">Temperature Gauge</label>
+                          <select class="form-select" id="temperature_gauge_1" name="doors[1][temperature_gauge]">
+                            <option value="">Select Option</option>
+                            <option value="Standard Temperature Gauge">Standard Temperature Gauge</option>
+                            <option value="Digital Temperature Gauge">Digital Temperature Gauge</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label for="receptacle_box_1" class="form-label">Receptacle Box</label>
+                          <select class="form-select" id="receptacle_box_1" name="doors[1][receptacle_box]">
+                            <option value="">Select Option</option>
+                            <option value="Standard Receptacle Box">Standard Receptacle Box</option>
+                            <option value="GFCI Receptacle Box">GFCI Receptacle Box</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="junction_box_1" class="form-label">Junction Box</label>
+                          <select class="form-select" id="junction_box_1" name="doors[1][junction_box]">
+                            <option value="">Select Option</option>
+                            <option value="PVC - 4\" X 4\" X 2\"">PVC - 4" X 4" X 2"</option>
+                            <option value="Metal Junction Box">Metal Junction Box</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label for="threshold_plate_1" class="form-label">Threshold Plate</label>
+                          <select class="form-select" id="threshold_plate_1" name="doors[1][threshold_plate]">
+                            <option value="">Select Option</option>
+                            <option value="Standard Threshold">Standard Threshold</option>
+                            <option value="Heated Threshold">Heated Threshold</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Sliding Door Options -->
+                    <div class="sliding-section mb-4" id="slidingDoorOptions_1" style="display: none;">
+                      <h5 class="text-secondary mb-3">Sliding Door Options</h5>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="sliding_door_category_1" class="form-label">Sliding Door Category</label>
+                          <select class="form-select" id="sliding_door_category_1" name="doors[1][sliding_door_category]">
+                            <option value="">Select Category</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Heavy Duty">Heavy Duty</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Expand Step 2 Button (when collapsed) -->
+                  <div class="text-center mb-4" id="expandStep2Btn_1">
+                    <button type="button" class="btn btn-outline-primary expand-step2-btn" data-bs-toggle="collapse" data-bs-target="#step2Section_1"><i class="fas fa-chevron-down me-2"></i>Add Options & Accessories (Step 2)</button>
+                  </div>
+
+                  <!-- Pricing Summary -->
+                  <div class="pricing-summary bg-light p-4 rounded mb-4">
+                    <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i>Pricing Summary of Door 1</h5>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="pricing-item">
+                          <span>Base Door Price:</span>
+                          <span class="price" id="basePrice_1">$0.00</span>
+                        </div>
+                        <div class="pricing-item">
+                          <span>Material Costs:</span>
+                          <span class="price" id="materialCost_1">$0.00</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="pricing-item">
+                          <span>Hardware & Options:</span>
+                          <span class="price" id="hardwareCost_1">$0.00</span>
+                        </div>
+                        <div class="pricing-item">
+                          <span>Labor & Installation:</span>
+                          <span class="price" id="laborCost_1">$0.00</span>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="pricing-total">
+                      <strong>Total Price: <span id="totalPrice_1">$0.00</span></strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-warning add-door-btn mb-4" type="button"> <i class="fa fa-plus"></i> Add New Door</button>
+            </div>
+
+            <!-- Total Quote Price -->
+            <div class="pricing-summary bg-light p-4 rounded mb-4">
+              <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i>Total Quote Price</h5>
+              <div class="pricing-total">
+                <strong>Total Quote Price: <span id="totalQuotePrice">$0.00</span></strong>
+              </div>
+            </div>
+
+            <!-- Generate Quote Button -->
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary btn-lg" id="generateQuoteBtn"><i class="fas fa-file-pdf me-2"></i>Generate Quote</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // PricingCalculator class
+    class PricingCalculator {
+      constructor() {
+        this.base_prices = {
+          'Overlap Doors - Swing door': {
+            'Cooler': { base: 1150.68 },
+            'Freezer': { base: 1495.88 }
+          },
+          'Power Operated Sliding door - Single horizontal': {
+            'Cooler': { base: 8187.27 },
+            'Freezer': { base: 8187.27 }
+          },
+          'Sliding Door': {
+            'Cooler': { base: 1800.00 },
+            'Freezer': { base: 2100.00 }
+          }
+        };
+
+        this.hardware_prices = {
+          'Mushroom Button': 13.93,
+          'Standard Release': 10.00,
+          'Spring Door Closer': 41.33,
+          'Hydraulic Door Closer': 65.00,
+          'SS6 Strike Chrome 3/4 x 1 5/8': 45.82,
+          'Standard Strike': 35.00,
+          'rain_hood_projection': 50.00,
+          'wind_chains': 25.00,
+          'internal_light': 75.00,
+          'light_switch': 15.00,
+          'vent': 35.00,
+          'Standard Temperature Gauge': 85.00,
+          'Digital Temperature Gauge': 125.00,
+          'Standard Receptacle Box': 45.00,
+          'GFCI Receptacle Box': 65.00,
+          'PVC - 4" X 4" X 2"': 25.00,
+          'Metal Junction Box': 35.00,
+          'Standard Threshold': 50.00,
+          'Heated Threshold': 150.00
+        };
+
+        this.material_costs = {
+          'door_panel': {
+            '26 Ga. White - Stucco Embossed Finish': 93.60,
+            '20 Ga. White - Stucco Embossed Finish': 125.00
+          },
+          'face_frame': {
+            'Aluminium Frame - Standard': 246.35,
+            'Wood Clad. 26 Ga. White - Stucco Embossed': 285.00
+          },
+          'inside_jamb': {
+            'Aluminium Frame - Standard': 55.50,
+            'Wood Clad. 26 Ga. White - Stucco Embossed': 75.00
+          },
+          'back_frame': {
+            'Aluminium Frame - Standard': 72.39,
+            'Wood Clad. 26 Ga. White - Stucco Embossed': 95.00
+          },
+          'freezer_door_motor_volts': {
+            '115VAC/1Phase-60Hz Defrost system': 180.00,
+            '230VAC/1Phase-60Hz Defrost system': 200.00
+          },
+          'bottom_sweep_weather_strip': {
+            'Bottom Sweep': 19.30,
+            'Weather Strip': 25.00,
+            'Both': 40.31
+          }
+        };
+
+        this.labor_costs = {
+          'labor_expense': 281.67,
+          'foam_expense': 43.64
+        };
+
+        this.sliding_door_prices = {
+          'Standard': 0.00,
+          'Heavy Duty': 150.00
+        };
+      }
+
+      calculateBasePrice(door_type, cooler_freezer, width, height, depth, quantity = 1, markup_percentage = 30) {
+        if (!this.base_prices[door_type] || !this.base_prices[door_type][cooler_freezer]) {
+          return 0.00;
+        }
+
+        const config = this.base_prices[door_type][cooler_freezer];
+        let base_price = config.base;
+
+        const standard_width = 34;
+        const standard_height = 65;
+
+        if (width > standard_width) {
+          base_price += (width - standard_width) * 15.00;
+        }
+
+        if (height > standard_height) {
+          base_price += (height - standard_height) * 12.00;
+        }
+
+        if (depth > 4) {
+          base_price += (depth - 4) * 50.00;
+        }
+
+        const markup = markup_percentage / 100; // Convert percentage to decimal
+        const base_price_with_markup = base_price * (1 + markup);
+        return Number((base_price_with_markup * quantity).toFixed(2));
+      }
+
+      calculateMaterialCosts(form_data) {
+        let total = 0.00;
+        const fields = ['door_panel', 'face_frame', 'inside_jamb', 'back_frame', 'freezer_door_motor_volts', 'bottom_sweep_weather_strip'];
+
+        fields.forEach(field => {
+          if (form_data[field]) {
+            total += this.material_costs[field][form_data[field]] || 0;
+          }
+        });
+
+        return Number(total.toFixed(2));
+      }
+
+      calculateHardwareCosts(form_data) {
+        let total = 0.00;
+        const hardware_fields = ['interior_release', 'door_closer', 'strike', 'temperature_gauge', 'receptacle_box', 'junction_box', 'threshold_plate'];
+        const boolean_options = ['rain_hood_projection', 'wind_chains', 'internal_light', 'light_switch', 'vent'];
+
+        hardware_fields.forEach(field => {
+          if (form_data[field]) {
+            total += this.hardware_prices[form_data[field]] || 0;
+          }
+        });
+
+        boolean_options.forEach(option => {
+          if (form_data[option]) {
+            total += this.hardware_prices[option] || 0;
+          }
+        });
+
+        if (form_data.sliding_door_package && form_data.sliding_door_category) {
+          total += this.sliding_door_prices[form_data.sliding_door_category] || 0;
+        }
+
+        return Number(total.toFixed(2));
+      }
+
+      calculateLaborCosts(form_data) {
+        const quantity = form_data.quantity || 1;
+        const total_labor = (this.labor_costs.labor_expense + this.labor_costs.foam_expense) * quantity;
+        return Number(total_labor.toFixed(2));
+      }
+
+      calculateTotalQuote(form_data) {
+        const door_type = form_data.door_type || '';
+        const cooler_freezer = form_data.cooler_freezer || '';
+        const width = Number(form_data.width_inches) || 34;
+        const height = Number(form_data.height_inches) || 65;
+        const depth = Number(form_data.depth_inches) || 4;
+        const quantity = Number(form_data.quantity) || 1;
+        const markup_percentage = Number(form_data.markup_percentage) || 30;
+
+        const base_price = this.calculateBasePrice(door_type, cooler_freezer, width, height, depth, quantity, markup_percentage);
+        const material_cost = this.calculateMaterialCosts(form_data);
+        const hardware_cost = this.calculateHardwareCosts(form_data);
+        const labor_cost = this.calculateLaborCosts(form_data);
+        const subtotal = base_price + material_cost + hardware_cost + labor_cost;
+
+        return {
+          base_price,
+          material_cost,
+          hardware_cost,
+          labor_cost,
+          subtotal,
+          total_price: Number(subtotal.toFixed(2))
+        };
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calculator = new PricingCalculator();
+      const form = document.getElementById('quoteForm');
+      const doorsWrapper = document.getElementById('doorsWrapper');
+      const addDoorBtn = document.querySelector('.add-door-btn');
+      let doorCount = 1;
+
+      // Function to add a new door section
+      function addNewDoor() {
+        doorCount++;
+        const doorTemplate = `
+          <div class="door-wrapper" data-door-id="${doorCount}">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2>Door ${doorCount}</h2>
+              <button type="button" class="btn btn-danger delete-door-btn">Delete</button>
+            </div>
+            <div class="door-inner-details">
+              <!-- Step 1: Door Configuration -->
+              <div class="section-header mb-4">
+                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-cog me-2"></i>Step 1: Door Configuration</h4>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="door_type_${doorCount}" class="form-label required">Door Type <span class="text-danger">*</span></label>
+                  <select class="form-select" id="door_type_${doorCount}" name="doors[${doorCount}][door_type]" required>
+                    <option value="">Select Door Type</option>
+                    <option value="Overlap Doors - Swing door">Overlap Doors - Swing door</option>
+                    <option value="Power Operated Sliding door - Single horizontal">Power Operated Sliding door - Single horizontal</option>
+                    <option value="Sliding Door">Sliding Door</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="cooler_freezer_${doorCount}" class="form-label required">Cooler / Freezer <span class="text-danger">*</span></label>
+                  <select class="form-select" id="cooler_freezer_${doorCount}" name="doors[${doorCount}][cooler_freezer]" required>
+                    <option value="">Select Type</option>
+                    <option value="Cooler">Cooler</option>
+                    <option value="Freezer">Freezer</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="frame_structure_${doorCount}" class="form-label required">Frame Structure <span class="text-danger">*</span></label>
+                  <select class="form-select" id="frame_structure_${doorCount}" name="doors[${doorCount}][frame_structure]" required>
+                    <option value="">Select Frame Structure</option>
+                    <option value="Aluminium">Aluminium</option>
+                    <option value="Wood">Wood</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="motorized_manual_${doorCount}" class="form-label required">Motorized/Manual <span class="text-danger">*</span></label>
+                  <select class="form-select" id="motorized_manual_${doorCount}" name="doors[${doorCount}][motorized_manual]" required>
+                    <option value="">Select Type</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Motorized">Motorized</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="exterior_type_${doorCount}" class="form-label">Exterior Type</label>
+                  <select class="form-select" id="exterior_type_${doorCount}" name="doors[${doorCount}][exterior_type]">
+                    <option value="">Select Exterior Type</option>
+                    <option value="Exterior Door - with step sill">Exterior Door - with step sill</option>
+                    <option value="Interior">Interior</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="quantity_${doorCount}" class="form-label required">Quantity <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" id="quantity_${doorCount}" name="doors[${doorCount}][quantity]" min="1" max="100" value="1" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="markup_percentage_${doorCount}" class="form-label required">Markup Percentage (%) <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" id="markup_percentage_${doorCount}" name="doors[${doorCount}][markup_percentage]" min="0" max="100" step="0.1" value="30" required>
+                </div>
+              </div>
+              <div class="row mb-3 passkey-section" id="passkeySection_${doorCount}" style="display: none;">
+                <div class="col-md-6">
+                  <label for="passkey_${doorCount}" class="form-label required">Passkey <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="passkey_${doorCount}" name="doors[${doorCount}][passkey]">
+                </div>
+              </div>
+              <!-- Door Dimensions -->
+              <div class="dimension-section mb-4">
+                <h5 class="text-secondary mb-3">Door Dimensions</h5>
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="width_inches_${doorCount}" class="form-label required">Width (inches) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control dimension-input" id="width_inches_${doorCount}" name="doors[${doorCount}][width_inches]" min="1" max="300" required>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="height_inches_${doorCount}" class="form-label required">Height (inches) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control dimension-input" id="height_inches_${doorCount}" name="doors[${doorCount}][height_inches]" min="1" max="300" required>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="depth_inches_${doorCount}" class="form-label required">Depth (inches) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control dimension-input" id="depth_inches_${doorCount}" name="doors[${doorCount}][depth_inches]" min="1" max="20" required>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="wall_thickness_inches_${doorCount}" class="form-label required">Wall Thickness (inches) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control dimension-input" id="wall_thickness_inches_${doorCount}" name="doors[${doorCount}][wall_thickness_inches]" min="1" max="20" required>
+                  </div>
+                </div>
+              </div>
+              <!-- Door Panel and Frame Options -->
+              <div class="panel-section mb-4">
+                <h5 class="text-secondary mb-3">Door Panel and Frame Options</h5>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="door_panel_${doorCount}" class="form-label">Door Panel</label>
+                    <select class="form-select" id="door_panel_${doorCount}" name="doors[${doorCount}][door_panel]">
+                      <option value="">Select Door Panel</option>
+                      <option value="26 Ga. White - Stucco Embossed Finish">26 Ga. White - Stucco Embossed Finish</option>
+                      <option value="20 Ga. White - Stucco Embossed Finish">20 Ga. White - Stucco Embossed Finish</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="face_frame_${doorCount}" class="form-label">Face Frame</label>
+                    <select class="form-select" id="face_frame_${doorCount}" name="doors[${doorCount}][face_frame]">
+                      <option value="">Select Face Frame</option>
+                      <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                      <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="inside_jamb_${doorCount}" class="form-label">Inside Jamb</label>
+                    <select class="form-select" id="inside_jamb_${doorCount}" name="doors[${doorCount}][inside_jamb]">
+                      <option value="">Select Inside Jamb</option>
+                      <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                      <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="back_frame_${doorCount}" class="form-label">Back Frame</label>
+                    <select class="form-select" id="back_frame_${doorCount}" name="doors[${doorCount}][back_frame]">
+                      <option value="">Select Back Frame</option>
+                      <option value="Aluminium Frame - Standard">Aluminium Frame - Standard</option>
+                      <option value="Wood Clad. 26 Ga. White - Stucco Embossed">Wood Clad. 26 Ga. White - Stucco Embossed</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="freezer_door_motor_volts_${doorCount}" class="form-label">Freezer Door - Motor Volts</label>
+                    <select class="form-select" id="freezer_door_motor_volts_${doorCount}" name="doors[${doorCount}][freezer_door_motor_volts]">
+                      <option value="">Select Voltage</option>
+                      <option value="115VAC/1Phase-60Hz Defrost system">115VAC/1Phase-60Hz Defrost system</option>
+                      <option value="230VAC/1Phase-60Hz Defrost system">230VAC/1Phase-60Hz Defrost system</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="bottom_sweep_weather_strip_${doorCount}" class="form-label">Bottom Sweep/Weather Strip</label>
+                    <select class="form-select" id="bottom_sweep_weather_strip_${doorCount}" name="doors[${doorCount}][bottom_sweep_weather_strip]">
+                      <option value="">Select Option</option>
+                      <option value="Bottom Sweep">Bottom Sweep</option>
+                      <option value="Weather Strip">Weather Strip</option>
+                      <option value="Both">Both</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- Step 1 Complete Button -->
+              <div class="text-center mb-4">
+                <button type="button" class="btn btn-success btn-lg complete-step1-btn" data-door-id="${doorCount}"><i class="fas fa-check me-2"></i>Complete Step 1 & Continue</button>
+              </div>
+              <!-- Step 2: Additional Options & Add-ons (Collapsed by default) -->
+              <div class="collapse" id="step2Section_${doorCount}">
+                <div class="section-header mb-4">
+                  <h4 class="text-primary border-bottom pb-2"><i class="fas fa-plus-circle me-2"></i>Step 2: Additional Options & Add-ons</h4>
+                </div>
+                <!-- Hardware Options -->
+                <div class="hardware-section mb-4">
+                  <h5 class="text-secondary mb-3">Hardware Options</h5>
+                  <div class="row mb-3">
+                    <div class="col-md-4">
+                      <label for="interior_release_${doorCount}" class="form-label">Interior Release</label>
+                      <select class="form-select" id="interior_release_${doorCount}" name="doors[${doorCount}][interior_release]">
+                        <option value="">Select Option</option>
+                        <option value="Mushroom Button">Mushroom Button</option>
+                        <option value="Standard Release">Standard Release</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="door_closer_${doorCount}" class="form-label">Door Closer</label>
+                      <select class="form-select" id="door_closer_${doorCount}" name="doors[${doorCount}][door_closer]">
+                        <option value="">Select Option</option>
+                        <option value="Spring Door Closer">Spring Door Closer</option>
+                        <option value="Hydraulic Door Closer">Hydraulic Door Closer</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="strike_${doorCount}" class="form-label">Strike</label>
+                      <select class="form-select" id="strike_${doorCount}" name="doors[${doorCount}][strike]">
+                        <option value="">Select Option</option>
+                        <option value="SS6 Strike Chrome 3/4 x 1 5/8">SS6 Strike Chrome 3/4 x 1 5/8</option>
+                        <option value="Standard Strike">Standard Strike</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- Additional Features -->
+                <div class="features-section mb-4">
+                  <h5 class="text-secondary mb-3">Additional Features</h5>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="rain_hood_projection_${doorCount}" name="doors[${doorCount}][rain_hood_projection]" value="y">
+                        <label class="form-check-label" for="rain_hood_projection_${doorCount}">Rain Hood / Projection</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="wind_chains_${doorCount}" name="doors[${doorCount}][wind_chains]" value="y">
+                        <label class="form-check-label" for="wind_chains_${doorCount}">Wind Chains</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="internal_light_${doorCount}" name="doors[${doorCount}][internal_light]" value="y">
+                        <label class="form-check-label" for="internal_light_${doorCount}">Internal Light</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="light_switch_${doorCount}" name="doors[${doorCount}][light_switch]" value="y">
+                        <label class="form-check-label" for="light_switch_${doorCount}">Light Switch</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="vent_${doorCount}" name="doors[${doorCount}][vent]" value="y">
+                        <label class="form-check-label" for="vent_${doorCount}">Vent</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input sliding-door-package" type="checkbox" id="sliding_door_package_${doorCount}" name="doors[${doorCount}][sliding_door_package]" value="y">
+                        <label class="form-check-label" for="sliding_door_package_${doorCount}">Sliding Door Package</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Technical Options -->
+                <div class="technical-section mb-4">
+                  <h5 class="text-secondary mb-3">Technical Options</h5>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="temperature_gauge_${doorCount}" class="form-label">Temperature Gauge</label>
+                      <select class="form-select" id="temperature_gauge_${doorCount}" name="doors[${doorCount}][temperature_gauge]">
+                        <option value="">Select Option</option>
+                        <option value="Standard Temperature Gauge">Standard Temperature Gauge</option>
+                        <option value="Digital Temperature Gauge">Digital Temperature Gauge</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="receptacle_box_${doorCount}" class="form-label">Receptacle Box</label>
+                      <select class="form-select" id="receptacle_box_${doorCount}" name="doors[${doorCount}][receptacle_box]">
+                        <option value="">Select Option</option>
+                        <option value="Standard Receptacle Box">Standard Receptacle Box</option>
+                        <option value="GFCI Receptacle Box">GFCI Receptacle Box</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="junction_box_${doorCount}" class="form-label">Junction Box</label>
+                      <select class="form-select" id="junction_box_${doorCount}" name="doors[${doorCount}][junction_box]">
+                        <option value="">Select Option</option>
+                        <option value="PVC - 4\" X 4\" X 2\"">PVC - 4" X 4" X 2"</option>
+                        <option value="Metal Junction Box">Metal Junction Box</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="threshold_plate_${doorCount}" class="form-label">Threshold Plate</label>
+                      <select class="form-select" id="threshold_plate_${doorCount}" name="doors[${doorCount}][threshold_plate]">
+                        <option value="">Select Option</option>
+                        <option value="Standard Threshold">Standard Threshold</option>
+                        <option value="Heated Threshold">Heated Threshold</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- Sliding Door Options -->
+                <div class="sliding-section mb-4" id="slidingDoorOptions_${doorCount}" style="display: none;">
+                  <h5 class="text-secondary mb-3">Sliding Door Options</h5>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="sliding_door_category_${doorCount}" class="form-label">Sliding Door Category</label>
+                      <select class="form-select" id="sliding_door_category_${doorCount}" name="doors[${doorCount}][sliding_door_category]">
+                        <option value="">Select Category</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Heavy Duty">Heavy Duty</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Expand Step 2 Button (when collapsed) -->
+              <div class="text-center mb-4" id="expandStep2Btn_${doorCount}">
+                <button type="button" class="btn btn-outline-primary expand-step2-btn" data-bs-toggle="collapse" data-bs-target="#step2Section_${doorCount}"><i class="fas fa-chevron-down me-2"></i>Add Options & Accessories (Step 2)</button>
+              </div>
+              <!-- Pricing Summary -->
+              <div class="pricing-summary bg-light p-4 rounded mb-4">
+                <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i>Pricing Summary of Door ${doorCount}</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="pricing-item">
+                      <span>Base Door Price:</span>
+                      <span class="price" id="basePrice_${doorCount}">$0.00</span>
+                    </div>
+                    <div class="pricing-item">
+                      <span>Material Costs:</span>
+                      <span class="price" id="materialCost_${doorCount}">$0.00</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="pricing-item">
+                      <span>Hardware & Options:</span>
+                      <span class="price" id="hardwareCost_${doorCount}">$0.00</span>
+                    </div>
+                    <div class="pricing-item">
+                      <span>Labor & Installation:</span>
+                      <span class="price" id="laborCost_${doorCount}">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div class="pricing-total">
+                  <strong>Total Price: <span id="totalPrice_${doorCount}">$0.00</span></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        doorsWrapper.insertAdjacentHTML('beforeend', doorTemplate);
+        attachEventListeners(doorCount);
+      }
+
+      // Function to attach event listeners to a door section
+      function attachEventListeners(doorId) {
+        const doorWrapper = document.querySelector(`.door-wrapper[data-door-id="${doorId}"]`);
+        const completeStep1Btn = doorWrapper.querySelector('.complete-step1-btn');
+        const expandStep2Btn = doorWrapper.querySelector(`#expandStep2Btn_${doorId}`);
+        const slidingDoorPackage = doorWrapper.querySelector(`#sliding_door_package_${doorId}`);
+        const slidingDoorOptions = doorWrapper.querySelector(`#slidingDoorOptions_${doorId}`);
+        const deleteDoorBtn = doorWrapper.querySelector('.delete-door-btn');
+        const step2Section = document.querySelector(`#step2Section_${doorId}`);
+        const markupInput = doorWrapper.querySelector(`#markup_percentage_${doorId}`);
+        const passkeySection = doorWrapper.querySelector(`#passkeySection_${doorId}`);
+        const passkeyInput = doorWrapper.querySelector(`#passkey_${doorId}`);
+
+        // Toggle passkey visibility based on markup percentage
+        function togglePasskeyInput() {
+          const markupValue = parseFloat(markupInput.value) || 0;
+          if (markupValue < 25) {
+            passkeySection.style.display = 'block';
+            passkeyInput.required = true;
+          } else {
+            passkeySection.style.display = 'none';
+            passkeyInput.required = false;
+            passkeyInput.value = ''; // Clear passkey when not needed
+          }
+        }
+
+        // Initial toggle check
+        togglePasskeyInput();
+
+        // Add change listener for markup percentage
+        markupInput.addEventListener('input', togglePasskeyInput);
+
+        // Step 1 completion
+        completeStep1Btn.addEventListener('click', function () {
+          const requiredFields = [
+            `door_type_${doorId}`,
+            `cooler_freezer_${doorId}`,
+            `frame_structure_${doorId}`,
+            `motorized_manual_${doorId}`,
+            `width_inches_${doorId}`,
+            `height_inches_${doorId}`,
+            `depth_inches_${doorId}`,
+            `wall_thickness_inches_${doorId}`,
+            `quantity_${doorId}`,
+            `markup_percentage_${doorId}`
+          ];
+
+          // Add passkey to required fields if markup < 25%
+          const markupValue = parseFloat(markupInput.value) || 0;
+          if (markupValue < 25) {
+            requiredFields.push(`passkey_${doorId}`);
+          }
+
+          let isValid = true;
+          requiredFields.forEach((field) => {
+            const input = document.querySelector(`#${field}`);
+            if (!input.value) {
+              input.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              input.classList.remove('is-invalid');
+            }
+          });
+
+          if (isValid) {
+            const step2Collapse = new bootstrap.Collapse(step2Section, { show: true });
+            expandStep2Btn.style.display = 'none';
+            completeStep1Btn.textContent = 'Step 1 Complete ✓';
+            completeStep1Btn.classList.remove('btn-success');
+            completeStep1Btn.classList.add('btn-outline-success');
+            completeStep1Btn.disabled = true;
+          } else {
+            alert(`Please complete all required fields for Door ${doorId} in Step 1`);
+          }
+        });
+
+        // Show/hide sliding door options
+        slidingDoorPackage.addEventListener('change', function () {
+          slidingDoorOptions.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Delete door
+        deleteDoorBtn.addEventListener('click', function () {
+          if (document.querySelectorAll('.door-wrapper').length > 1) {
+            doorWrapper.remove();
+            calculateTotalQuotePrice();
+          } else {
+            alert('At least one door is required.');
+          }
+        });
+
+        // Add change listeners for price calculation
+        const priceInputs = doorWrapper.querySelectorAll('input, select');
+        priceInputs.forEach((input) => {
+          input.addEventListener('change', () => calculatePrice(doorId));
+        });
+      }
+
+      // Real-time price calculation for a specific door
+      function calculatePrice(doorId) {
+        const doorWrapper = document.querySelector(`.door-wrapper[data-door-id="${doorId}"]`);
+        const formData = {};
+
+        // Collect door-specific data
+        const inputs = doorWrapper.querySelectorAll('input, select');
+        inputs.forEach(input => {
+          const match = input.name.match(/doors\[\d+\]\[(.+)\]/);
+          if (match) {
+            const field = match[1];
+            if (input.type === 'checkbox') {
+              formData[field] = input.checked ? 'y' : '';
+            } else if (field.endsWith('_inches') || field === 'quantity' || field === 'markup_percentage') {
+              formData[field] = parseFloat(input.value) || 0;
+            } else {
+              formData[field] = input.value;
+            }
+          }
+        });
+
+        const pricing = calculator.calculateTotalQuote(formData);
+        updatePricingDisplay(doorId, pricing);
+        calculateTotalQuotePrice();
+      }
+
+      // Update pricing display for a specific door
+      function updatePricingDisplay(doorId, pricing) {
+        document.getElementById(`basePrice_${doorId}`).textContent = `$${pricing.base_price.toFixed(2)}`;
+        document.getElementById(`materialCost_${doorId}`).textContent = `$${pricing.material_cost.toFixed(2)}`;
+        document.getElementById(`hardwareCost_${doorId}`).textContent = `$${pricing.hardware_cost.toFixed(2)}`;
+        document.getElementById(`laborCost_${doorId}`).textContent = `$${pricing.labor_cost.toFixed(2)}`;
+        document.getElementById(`totalPrice_${doorId}`).textContent = `$${pricing.total_price.toFixed(2)}`;
+      }
+
+      // Calculate total quote price
+      function calculateTotalQuotePrice() {
+        let total = 0;
+        document.querySelectorAll('.pricing-total span[id^="totalPrice_"]').forEach((el) => {
+          const price = parseFloat(el.textContent.replace('$', '')) || 0;
+          total += price;
+        });
+        document.getElementById('totalQuotePrice').textContent = `$${total.toFixed(2)}`;
+      }
+
+      // Add new door button click
+      addDoorBtn.addEventListener('click', addNewDoor);
+
+      // Attach event listeners to initial door
+      attachEventListeners(1);
+
+      // Initial price calculation
+      calculatePrice(1);
+    });
+  </script>
+{% endblock %}
