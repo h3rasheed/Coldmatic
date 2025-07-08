@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}New Door Quote - Coldmatic{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-door-open me-2"></i>
+                    Door Quotation Generator
+                </h3>
+            </div>
+            <div class="card-body">
+                <form id="quoteForm" method="POST" action="{{ url_for('generate_quote') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Customer Information -->
+                    <div class="section-header mb-4">
+                        <h4 class="text-primary border-bottom pb-2">
+                            <i class="fas fa-user me-2"></i>Customer Information
+                        </h4>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.customer_name.label(class="form-label") }}
+                            {{ form.customer_name(class="form-control") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.attention_to.label(class="form-label") }}
+                            {{ form.attention_to(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            {{ form.customer_address.label(class="form-label") }}
+                            {{ form.customer_address(class="form-control", rows="3") }}
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Door Configuration -->
+                    <div class="section-header mb-4">
+                        <h4 class="text-primary border-bottom pb-2">
+                            <i class="fas fa-cog me-2"></i>Step 1: Door Configuration
+                        </h4>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.door_type.label(class="form-label required") }}
+                            {{ form.door_type(class="form-select", id="doorType") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.cooler_freezer.label(class="form-label required") }}
+                            {{ form.cooler_freezer(class="form-select", id="coolerFreezer") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.frame_structure.label(class="form-label required") }}
+                            {{ form.frame_structure(class="form-select") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.motorized_manual.label(class="form-label required") }}
+                            {{ form.motorized_manual(class="form-select") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.exterior_type.label(class="form-label") }}
+                            {{ form.exterior_type(class="form-select") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.quantity.label(class="form-label required") }}
+                            {{ form.quantity(class="form-control", id="quantity") }}
+                        </div>
+                    </div>
+
+                    <!-- Door Dimensions -->
+                    <div class="dimension-section mb-4">
+                        <h5 class="text-secondary mb-3">Door Dimensions</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                {{ form.width_inches.label(class="form-label required") }}
+                                {{ form.width_inches(class="form-control dimension-input", id="width") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.height_inches.label(class="form-label required") }}
+                                {{ form.height_inches(class="form-control dimension-input", id="height") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.depth_inches.label(class="form-label required") }}
+                                {{ form.depth_inches(class="form-control dimension-input", id="depth") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.wall_thickness_inches.label(class="form-label required") }}
+                                {{ form.wall_thickness_inches(class="form-control dimension-input") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Door Panel and Frame Options -->
+                    <div class="panel-section mb-4">
+                        <h5 class="text-secondary mb-3">Door Panel and Frame Options</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.door_panel.label(class="form-label") }}
+                                {{ form.door_panel(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.face_frame.label(class="form-label") }}
+                                {{ form.face_frame(class="form-select") }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.inside_jamb.label(class="form-label") }}
+                                {{ form.inside_jamb(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.back_frame.label(class="form-label") }}
+                                {{ form.back_frame(class="form-select") }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.freezer_door_motor_volts.label(class="form-label") }}
+                                {{ form.freezer_door_motor_volts(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.bottom_sweep_weather_strip.label(class="form-label") }}
+                                {{ form.bottom_sweep_weather_strip(class="form-select") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1 Complete Button -->
+                    <div class="text-center mb-4">
+                        <button type="button" class="btn btn-success btn-lg" id="completeStep1">
+                            <i class="fas fa-check me-2"></i>Complete Step 1 & Continue
+                        </button>
+                    </div>
+
+                    <!-- Step 2: Additional Options & Add-ons (Collapsed by default) -->
+                    <div class="collapse" id="step2Section">
+                        <div class="section-header mb-4">
+                            <h4 class="text-primary border-bottom pb-2">
+                                <i class="fas fa-plus-circle me-2"></i>Step 2: Additional Options & Add-ons
+                            </h4>
+                        </div>
+
+                        <!-- Hardware Options -->
+                        <div class="hardware-section mb-4">
+                            <h5 class="text-secondary mb-3">Hardware Options</h5>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.interior_release.label(class="form-label") }}
+                                    {{ form.interior_release(class="form-select") }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.door_closer.label(class="form-label") }}
+                                    {{ form.door_closer(class="form-select") }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.strike.label(class="form-label") }}
+                                    {{ form.strike(class="form-select") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Features -->
+                        <div class="features-section mb-4">
+                            <h5 class="text-secondary mb-3">Additional Features</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        {{ form.rain_hood_projection(class="form-check-input") }}
+                                        {{ form.rain_hood_projection.label(class="form-check-label") }}
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        {{ form.wind_chains(class="form-check-input") }}
+                                        {{ form.wind_chains.label(class="form-check-label") }}
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        {{ form.internal_light(class="form-check-input") }}
+                                        {{ form.internal_light.label(class="form-check-label") }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        {{ form.light_switch(class="form-check-input") }}
+                                        {{ form.light_switch.label(class="form-check-label") }}
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        {{ form.vent(class="form-check-input") }}
+                                        {{ form.vent.label(class="form-check-label") }}
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        {{ form.sliding_door_package(class="form-check-input") }}
+                                        {{ form.sliding_door_package.label(class="form-check-label") }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Options -->
+                        <div class="technical-section mb-4">
+                            <h5 class="text-secondary mb-3">Technical Options</h5>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ form.temperature_gauge.label(class="form-label") }}
+                                    {{ form.temperature_gauge(class="form-select") }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.receptacle_box.label(class="form-label") }}
+                                    {{ form.receptacle_box(class="form-select") }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ form.junction_box.label(class="form-label") }}
+                                    {{ form.junction_box(class="form-select") }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.threshold_plate.label(class="form-label") }}
+                                    {{ form.threshold_plate(class="form-select") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sliding Door Options -->
+                        <div class="sliding-section mb-4" id="slidingDoorOptions" style="display: none;">
+                            <h5 class="text-secondary mb-3">Sliding Door Options</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.sliding_door_category.label(class="form-label") }}
+                                    {{ form.sliding_door_category(class="form-select") }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expand Step 2 Button (when collapsed) -->
+                    <div class="text-center mb-4" id="expandStep2Btn">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#step2Section">
+                            <i class="fas fa-chevron-down me-2"></i>Add Options & Accessories (Step 2)
+                        </button>
+                    </div>
+
+                    <!-- Pricing Summary -->
+                    <div class="pricing-summary bg-light p-4 rounded mb-4">
+                        <h5 class="text-primary mb-3">
+                            <i class="fas fa-calculator me-2"></i>Pricing Summary
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="pricing-item">
+                                    <span>Base Door Price:</span>
+                                    <span class="price" id="basePrice">$0.00</span>
+                                </div>
+                                <div class="pricing-item">
+                                    <span>Material Costs:</span>
+                                    <span class="price" id="materialCost">$0.00</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="pricing-item">
+                                    <span>Hardware & Options:</span>
+                                    <span class="price" id="hardwareCost">$0.00</span>
+                                </div>
+                                <div class="pricing-item">
+                                    <span>Labor & Installation:</span>
+                                    <span class="price" id="laborCost">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="pricing-total">
+                            <strong>Total Price: <span id="totalPrice">$0.00</span></strong>
+                        </div>
+                    </div>
+
+                    <!-- Generate Quote Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" id="generateQuoteBtn">
+                            <i class="fas fa-file-pdf me-2"></i>Generate Quote
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Real-time price calculation and form interactions
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('quoteForm');
+    const step2Section = document.getElementById('step2Section');
+    const completeStep1Btn = document.getElementById('completeStep1');
+    const expandStep2Btn = document.getElementById('expandStep2Btn');
+    const slidingDoorPackage = document.querySelector('input[name="sliding_door_package"]');
+    const slidingDoorOptions = document.getElementById('slidingDoorOptions');
+
+    // Step 1 completion
+    completeStep1Btn.addEventListener('click', function() {
+        // Validate required Step 1 fields
+        const requiredFields = ['door_type', 'cooler_freezer', 'frame_structure', 'motorized_manual', 
+                               'width_inches', 'height_inches', 'depth_inches', 'wall_thickness_inches'];
+        
+        let isValid = true;
+        requiredFields.forEach(field => {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (!input.value) {
+                input.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (isValid) {
+            // Expand Step 2
+            const step2Collapse = new bootstrap.Collapse(step2Section, {show: true});
+            expandStep2Btn.style.display = 'none';
+            completeStep1Btn.textContent = 'Step 1 Complete ✓';
+            completeStep1Btn.classList.remove('btn-success');
+            completeStep1Btn.classList.add('btn-outline-success');
+            completeStep1Btn.disabled = true;
+        } else {
+            alert('Please complete all required fields in Step 1');
+        }
+    });
+
+    // Show/hide sliding door options
+    slidingDoorPackage.addEventListener('change', function() {
+        slidingDoorOptions.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Real-time price calculation
+    const priceInputs = form.querySelectorAll('input, select');
+    priceInputs.forEach(input => {
+        input.addEventListener('change', calculatePrice);
+    });
+
+    function calculatePrice() {
+        const formData = new FormData(form);
+        const data = {};
+        
+        // Convert FormData to regular object
+        for (let [key, value] of formData.entries()) {
+            if (key.endsWith('_inches') || key === 'quantity') {
+                data[key] = parseInt(value) || 0;
+            } else if (document.querySelector(`[name="${key}"]`).type === 'checkbox') {
+                data[key] = value === 'y';
+            } else {
+                data[key] = value;
+            }
+        }
+
+        fetch('/calculate_price', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                updatePricingDisplay(result.pricing);
+            }
+        })
+        .catch(error => console.error('Price calculation error:', error));
+    }
+
+    function updatePricingDisplay(pricing) {
+        document.getElementById('basePrice').textContent = `$${pricing.base_price.toFixed(2)}`;
+        document.getElementById('materialCost').textContent = `$${pricing.material_cost.toFixed(2)}`;
+        document.getElementById('hardwareCost').textContent = `$${pricing.hardware_cost.toFixed(2)}`;
+        document.getElementById('laborCost').textContent = `$${pricing.labor_cost.toFixed(2)}`;
+        document.getElementById('totalPrice').textContent = `$${pricing.total_price.toFixed(2)}`;
+    }
+
+    // Initial price calculation
+    //calculatePrice();
+});
+</script>
+{% endblock %}
